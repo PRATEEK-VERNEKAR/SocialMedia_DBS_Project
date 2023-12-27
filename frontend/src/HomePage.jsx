@@ -9,6 +9,7 @@ export default function HomePage(){
       <h1 className="text-2xl py-5">Socio King</h1>
       <p>Feel The Friends Vibe</p>
       <button onClick={()=>{navigate('/register')}}>Register Here</button>
+      <button onClick={()=>{navigate('/login')}}>Login Here</button>
     </div>
   )
 }
