@@ -14,6 +14,7 @@ const register = (req, res) => {
         return res.status(500).json(err);
       }
 
+
       const value = [req.body.username];
       connection.query(q, value, (err, data) => {
         if (err) {

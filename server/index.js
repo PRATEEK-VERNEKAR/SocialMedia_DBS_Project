@@ -22,6 +22,6 @@ app.use('/api/users/comments',comment);
 app.use('/api/users',like)
 app.use('/api/users',relationship);
 app.use('/api/userstories',stories);
-app.listen(3000, () => {
-  console.log("Server is running at port 3000");
+app.listen(8000, () => {
+  console.log("Server is running at port 8000");
 });
