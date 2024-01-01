@@ -2,10 +2,15 @@ const express = require('express');
 const pool  = require('../connect.js');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const multer = require('multer');
+const upload = multer();
+
+
 const { connection } = require('mongoose');
 const getposts = (req,res)=>{
     const userId = req.query.userId;
     const token = req.cookies.accessToken;
+    console.log(token);
     if(!token){
         console.log("Sorry");
         res.status(401).json("Not logged in");
@@ -29,8 +34,6 @@ const getposts = (req,res)=>{
                     console.log(err);
                 }
                 res.json(data);
-
-           
            })
         })
 
@@ -63,14 +66,52 @@ const addposts = (req,res)=>{
             if(err){
                 res.json("Sorry Some Glitch");
             }
-            const values = [req.body.desc,req.body.img,moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),userInfo.id];
-            connection.query(q,values,(err,data)=>{
-                if(err){
-                    res.json(err);
-                }
-                else{
-                    res.status(200).json("Post is Created")
-                }
+
+            upload.fields([{ name: 'img', maxCount: 1 }, { name: 'desc' }])(req,res,(err)=>{
+                // const img=req.files.img;
+                // console.log(img);
+                // console.log(req.body.desc)
+
+                const desc=req.body.desc;
+                const img=req.files.img[0].buffer;
+                console.log(req.files.img[0].buffer);
+                const values = [desc, img, moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"), userInfo.id];
+                
+                console.log(desc);
+                console.log(img);
+                
+                connection.query(q,values,(err,data)=>{
+                    if(err){
+                        console.log(err);
+                        res.json(err);
+                    }
+                    else{
+                        res.status(200).json("Post is Created")
+                    }
+                })
+
+
+                // upload.none()(req, res, (err) => {
+                //     // const values = [req.body.desc,,moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),userInfo.id];
+                //     const desc = req.body.desc;
+                //     // const img = req.body.img;
+                    
+                //     console.log(req.body);
+                //     const values = [desc, img, moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"), userInfo.id];
+                    
+                //     console.log(desc);
+                //     console.log(img);
+                    
+                //     connection.query(q,values,(err,data)=>{
+                //         if(err){
+                //             console.log(err);
+                //             res.json(err);
+                //         }
+                //         else{
+                //             res.status(200).json("Post is Created")
+                //         }
+                //     })
+                // })
             })
         })
     })

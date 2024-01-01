@@ -27,8 +27,6 @@ const getuser = (req,res)=>{
                 }
             })
         })
-
-
 }
 
 
@@ -62,7 +60,7 @@ const updateuser = (req,res)=>{
                     connection.query(q,values,(err,data)=>{
                         if(err){
                             console.log(err);
-                            res.json("SOme error sorry wait for some time or call the helpline number");
+                            res.json("Some error sorry wait for some time or call the helpline number");
                         }
                         else{
                             if(data.affectedRows > 0){

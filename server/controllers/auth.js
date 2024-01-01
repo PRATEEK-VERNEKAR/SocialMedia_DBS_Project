@@ -56,9 +56,6 @@ const register = (req, res) => {
   
 
 
-
-
-
 const login = (req, res) => {
     const q = "SELECT * FROM new_table WHERE `username` = ?";
     pool.getConnection((err, connection) => {
@@ -92,8 +89,7 @@ const login = (req, res) => {
   
         res.cookie("accessToken", token, {
           httpOnly: true,
-      
-        }).status(200).json(other);
+        }).status(200).json({...other,token});
       });
     });
   };

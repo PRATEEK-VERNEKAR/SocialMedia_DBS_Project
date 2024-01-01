@@ -3,10 +3,10 @@ const mysql = require('mysql');
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
-  database: "Social_Media_Database",
+  database: "Jan1SocialMedia"
 });
 
 

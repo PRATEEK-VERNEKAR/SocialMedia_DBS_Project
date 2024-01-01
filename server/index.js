@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql');
+var multer = require('multer');
+var upload = multer();
+
 const userroute = require('./routes/users');
 const authroute = require('./routes/auth');
 const cookieparser = require('cookie-parser');
