@@ -10,23 +10,22 @@ const getuser = (req,res)=>{
         return res.json("Please Login so you can access the content");
     }
    
-
-        pool.getConnection((err,connection)=>{
+    pool.getConnection((err,connection)=>{
+        if(err){
+            return res.status(403).json("Sorry some problem");
+        }
+        const q = "SELECT * FROM new_table WHERE `id` = ?"
+        connection.query(q,[userId],(err,data)=>{
             if(err){
-                return res.status(403).json("Sorry some problem");
+                console.log(err);
+                return res.json("Sorry Some issue");
             }
-            const q = "SELECT * FROM new_table WHERE `id` = ?"
-            connection.query(q,[userId],(err,data)=>{
-                if(err){
-                    console.log(err);
-                    return res.json("Sorry Some issue");
-                }
-                else{
-                    const {password,...info} = data[0]|| {};
-                    return res.json(info);
-                }
-            })
+            else{
+                const {password,...info} = data[0]|| {};
+                return res.json(info);
+            }
         })
+    })
 }
 
 
@@ -39,8 +38,7 @@ const updateuser = (req,res)=>{
     jwt.verify(token,"secretkey",(err,userInfo)=>{
         if(err){
             console.log(err);
-            return res.status(401).jaon("SOme error");
-
+            return res.status(401).json("Some error");
         }
         else{
             pool.getConnection((err,connection)=>{
@@ -77,4 +75,24 @@ const updateuser = (req,res)=>{
     })
 }
 
-module.exports = {getuser,updateuser}
+
+
+const protectedRoute = (req,res)=>{
+    const token=req.cookies.accessToken;    
+    console.log(token);
+    if(!token){
+        return res.json("Please login");
+    }
+    jwt.verify(token,"secretkey",(err,userInfo)=>{
+        if(err){
+            console.log(err);
+            return res.status(401).json({"success":false});
+        }
+        else{
+            return res.status(200).json({"success":"Verified"});
+        }
+    })
+  
+}
+
+module.exports = {getuser,updateuser,protectedRoute}

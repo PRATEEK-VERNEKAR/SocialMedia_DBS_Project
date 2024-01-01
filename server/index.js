@@ -14,12 +14,12 @@ const relationship = require('./routes/relationships');
 const stories = require('./routes/stories');
 const app = express();
 
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
-app.use(cors());
 app.use(cookieparser());
 
 app.use('/api/users', userroute);
-app.use('/api/users', authroute);
+app.use('/api/users/auth', authroute);
 app.use('/api/user',postsroute)
 app.use('/api/users/comments',comment);
 app.use('/api/users',like)

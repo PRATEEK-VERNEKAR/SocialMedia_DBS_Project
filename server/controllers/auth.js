@@ -89,6 +89,8 @@ const login = (req, res) => {
   
         return res.cookie("accessToken", token, {
           httpOnly: true,
+          sameSite:'None',
+          secure:true
         }).status(200).json({...other,token});
       });
     });
@@ -100,7 +102,7 @@ const logout  = (req,res)=>{
         expires:new Date(0),
         httpOnly:true
     }).status(200).json("Sucessfully logged out")
-    
-   
 }
+
+
 module.exports = {register,login,logout}
