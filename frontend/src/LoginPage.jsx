@@ -1,8 +1,10 @@
 import axios from "axios"
 import { useState } from "react"
 import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage(){
+    const navigate=useNavigate();
     const [user,setUser]=useState({"username":"","password":""});
 
     const handleChange=(e)=>{
@@ -14,7 +16,7 @@ export default function RegisterPage(){
     const handleSubmit=async (e)=>{
         e.preventDefault();
         try{
-            const res=await axios.post("http://localhost:8000/api/users/login",user);
+            const res=await axios.post("http://localhost:8000/api/users/auth/login",user);
             console.log(res.data);
             setUser({"username":"","password":""});
 
@@ -22,6 +24,7 @@ export default function RegisterPage(){
 
             if(res.status===200){
                 Cookies.set("accessToken",res.data.token,{expires:30,path:'/'});
+                navigate('/profile')
             }
         }
         catch(err){
@@ -31,14 +34,16 @@ export default function RegisterPage(){
 
     
     return(
-      <div className="bg-red-100 h-full flex flex-col justify-center items-center">
-        <h1 className="text-2xl py-5">Socio King</h1>
-        <p>Feel The Friends Vibe</p>
-        <form className="flex flex-col mt-5 gap-4 w-[90%] items-center border-2 border-black">
-          <h2>Login Here!!</h2>
-          <input type="text" id="username" name="username" onChange={handleChange} value={user.username} placeholder="username"></input>
-          <input type="password" id="password" name="password" onChange={handleChange} value={user.password} placeholder="password"></input>
-          <button onClick={handleSubmit} className="bg-blue-200 p-2 my-2">Login</button>
+      <div className="w-full flex flex-col justify-center items-center">
+        <form className="flex flex-col mt-5 gap-4 w-[90%] items-center ">
+          <h2 className='text-3xl'>Login Here!!</h2>
+          <input className='border-4 border-red-800 rounded-2xl w-[90%] text-2xl p-2 bg-transparent text-white placeholder-white' onChange={handleChange} type="text" name='username' id='username' value={user.username} placeholder="Name"></input>
+          <input className='border-4 border-red-800 rounded-2xl w-[90%] text-2xl p-2 bg-transparent text-white placeholder-white' onChange={handleChange} type="password" name='password' id='password' value={user.password} placeholder="Password"></input>
+          
+          <div>
+            <button onClick={handleSubmit} className="text-2xl border-2 border-black rounded-xl p-2 m-2">Login</button>
+            <a href="/register" className='text-red-900 text-xl text-bold'>Dont Have an Account??</a>
+          </div>
         </form>
       </div>
     )

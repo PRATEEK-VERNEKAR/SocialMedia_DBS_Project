@@ -7,7 +7,7 @@ import ProfilePage from './ProfilePage';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App bg-red-100 h-full flex flex-col justify-evenly items-center bg-gradient-to-r from-blue-500 via-yellow-200 via-purple-500 to-pink-500">
       <BrowserRouter>
         <Routes>
           <Route exact path='/' element={<HomePage/>}></Route>
