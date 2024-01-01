@@ -37,7 +37,8 @@ const getposts = (req,res)=>{
                 if(err){
                     console.log(err);
                 }
-                return res.json(data);
+                const filteredData=data.map(({desc,img,createddate,...rest})=>{return {desc,img,createddate}});   // or modify query
+                return res.json(filteredData);
            })
         })
 

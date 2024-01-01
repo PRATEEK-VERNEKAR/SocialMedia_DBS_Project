@@ -33,8 +33,7 @@ export default function ProfilePage() {
         //     console.log(desc);
         // }
 
-        console.log(response.data[0].desc)
-
+        setAllPosts(response.data)
       } catch (error) {
         console.log(error.message);
         // navigate('/login');
@@ -44,6 +43,12 @@ export default function ProfilePage() {
     authenticateUser();
   }, []);
 
+
+  const convertBufferToDataURL = (buffer) => {
+    const dataUrl = `data:image/png;base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)))}`;
+    return dataUrl;
+  };
+
   return (
     <>
       <div>
@@ -52,7 +57,8 @@ export default function ProfilePage() {
             allPosts.map((data,index)=>{
                 return(
                     <>
-                        Description = {data.desc}
+                        <img src={convertBufferToDataURL(data.img.data)} width={500} height={500}></img>
+                        {data.desc}
                     </>
                 )
             })
