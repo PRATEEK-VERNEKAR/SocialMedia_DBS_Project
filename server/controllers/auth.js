@@ -41,10 +41,10 @@ const register = (req, res) => {
   
               connection.query(q1, values, (insertErr, data) => {
                 if (insertErr) {
-                  res.status(500).json(insertErr);
+                  return res.status(500).json(insertErr);
                 } else {
                
-                  res.status(200).json(data);
+                  return res.status(200).json(data);
                 }
               });
             }
@@ -87,7 +87,7 @@ const login = (req, res) => {
         const token = jwt.sign({ id: data[0].id }, "secretkey");
         const { password, ...other } = data[0];
   
-        res.cookie("accessToken", token, {
+        return res.cookie("accessToken", token, {
           httpOnly: true,
         }).status(200).json({...other,token});
       });
@@ -96,7 +96,7 @@ const login = (req, res) => {
 
 
 const logout  = (req,res)=>{
-    res.cookie("accessToken","",{
+    return res.cookie("accessToken","",{
         expires:new Date(0),
         httpOnly:true
     }).status(200).json("Sucessfully logged out")

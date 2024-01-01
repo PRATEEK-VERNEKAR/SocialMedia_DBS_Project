@@ -6,23 +6,24 @@ const moment = require('moment');
 const getallrelationship = (req,res)=>{
     const userId = req.query.userId;
     const token = req.cookies.accessToken;
+    console.log(token);
     if(!token){
-        res.json("Sorry No token");
+        return res.json("Sorry No token");
     }
     jwt.verify(token,"secretkey",(err,userInfo)=>{
         const q = "SELECT `followingid` FROM relationships WHERE `followersid` = ?";
+        console.log(userInfo.id)
+
         pool.getConnection((err,connection)=>{
             if(err){
-                res.json(err);
+                return res.json(err);
             }
             connection.query(q,[userInfo.id],(err,data)=>{
                 console.log(userInfo.id)
-                res.status(200).json(data.map(r=>r.followingid));
+                return res.status(200).json(data.map(r=>r.followingid));
             })
         })
-
-    })
-        
+    })  
 }
 
 
@@ -30,13 +31,14 @@ const getallrelationship = (req,res)=>{
 const addfollowing = (req,res)=>{
     const userId = req.query.userId;
     const token = req.cookies.accessToken;
+    console.log(token);
     if(!token){
         console.log("Sorry");
-        res.status(401).json("Not logged in");
+        return res.status(401).json("Not logged in");
     }
     jwt.verify(token,"secretkey",(err,userInfo)=>{
         if(err){
-            res.status(403).json("Invalid,sorry cannot retrive");
+            return res.status(403).json("Invalid,sorry cannot retrive");
         }
 
 
@@ -47,13 +49,13 @@ const addfollowing = (req,res)=>{
         
         pool.getConnection((err,connection)=>{
             if(err){
-                res.json("Sorry SOme glitch");
+                return res.json("Sorry SOme glitch");
             }
            connection.query(q,values,(err,data)=>{
                 if(err){
                     console.log(err);
                 }
-                res.json(data);
+                return res.json(data);
 
            
            })
@@ -67,29 +69,30 @@ const deleterelationship = (req,res)=>{
     
         const userId = req.query.userId;
         const token = req.cookies.accessToken;
+        console.log(token);
         if(!token){
             console.log("Sorry");
-            res.status(401).json("Not logged in");
+            return res.status(401).json("Not logged in");
         }
         jwt.verify(token,"secretkey",(err,userInfo)=>{
             if(err){
-                res.status(403).json("Invalid,sorry cannot retrive");
+                return res.status(403).json("Invalid,sorry cannot retrive");
             }
     
     
             const q = "DELETE FROM relationships WHERE `followingid` = ? AND `followersid` = ?";
             const values = [req.body.followingid, userInfo.id]
             
-            
+            console.log(values);
             pool.getConnection((err,connection)=>{
                 if(err){
-                    res.json("Sorry SOme glitch");
+                    return res.json("Sorry SOme glitch");
                 }
                connection.query(q,values,(err,data)=>{
                     if(err){
                         console.log(err);
                     }
-                    res.json(data);
+                    return res.json(data);
     
                
                })
