@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {getallrelationship,addfollowing,deleterelationship} = require('../controllers/relationships');
 
-router.get("/relationship/:id",getallrelationship);
+router.get("/relationship",getallrelationship);
 router.post("/addfoll",addfollowing);
 router.delete("/del",deleterelationship);
 

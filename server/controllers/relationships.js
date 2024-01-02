@@ -6,12 +6,14 @@ const moment = require('moment');
 const getallrelationship = (req,res)=>{
     const userId = req.query.userId;
     const token = req.cookies.accessToken;
+    console.log("HIIHI")
     console.log(token);
     if(!token){
         return res.json("Sorry No token");
     }
+
     jwt.verify(token,"secretkey",(err,userInfo)=>{
-        const q = "SELECT `followingid` FROM relationships WHERE `followersid` = ?";
+        const q = "SELECT * FROM relationships JOIN new_table ON (new_table.id=relationships.followingid) WHERE `followersid` = ?";
         console.log(userInfo.id)
 
         pool.getConnection((err,connection)=>{
@@ -20,10 +22,11 @@ const getallrelationship = (req,res)=>{
             }
             connection.query(q,[userInfo.id],(err,data)=>{
                 console.log(userInfo.id)
-                return res.status(200).json(data.map(r=>r.followingid));
+                console.log(data);
+                return res.status(200).json(data.map(({followingid,followersid,relationshipid,password,id,...rest})=>({...rest})));
             })
         })
-    })  
+    })
 }
 
 
@@ -45,8 +48,7 @@ const addfollowing = (req,res)=>{
         const q = "INSERT INTO relationships(`followersid`,`followingid`) VALUES(?,?)";
         const values = [userInfo.id,req.body.followingid];
 
-        
-        
+
         pool.getConnection((err,connection)=>{
             if(err){
                 return res.json("Sorry SOme glitch");

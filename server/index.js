@@ -23,7 +23,7 @@ app.use('/api/users/auth', authroute);
 app.use('/api/user',postsroute)
 app.use('/api/users/comments',comment);
 app.use('/api/users',like)
-app.use('/api/users',relationship);
+app.use('/api/users/relationship',relationship);
 app.use('/api/userstories',stories);
 app.listen(8000, () => {
   console.log("Server is running at port 8000");
