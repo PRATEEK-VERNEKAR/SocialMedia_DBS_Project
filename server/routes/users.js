@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const {getuser,updateuser,protectedRoute, getAllUser} = require('../controllers/user');
+const {getuser,updateuser,protectedRoute, getAllUser, updateProfile, updateCover} = require('../controllers/user');
 
 
 router.get("/protectedRoute",protectedRoute);
 router.get('/getAllUsers',getAllUser);
-router.get("/:id",getuser);
-router.put("/:id",updateuser);
+router.get("/getUser",getuser);
+router.put("/updateUser",updateuser);
+router.put("/updateCover",updateCover);
+router.put("/updateProfile",updateProfile);
+
 
 module.exports = router;

@@ -22,42 +22,46 @@ const AllUsers = () => {
   },[])
 
   const convertBufferToDataURL = (buffer) => {
+    if (!buffer) {
+      // Default image if undefined
+      return 'https://via.placeholder.com/150';
+    }
+
     const dataUrl = `data:image/png;base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)))}`;
     return dataUrl;
   };
 
+
   return (
-    <div>
-      {
-        allUsers.map((data,index)=>{
-            return(
-                <div className="border-2 border-red-400  rounded-xl w-full ">
-                    {data.coverpic && data.coverpic.img && data.coverpic.img.data && (
-                        <img
-                            src={convertBufferToDataURL(data.coverpic.img.data)}
-                            width={500}
-                            height={500}
-                            className="rounded-t-xl"
-                            alt="Cover Pic"
-                        />
-                    )}          
-                    {data.profilepic && data.profilepic.img && data.profilepic.img.data && (
-                        <img
-                            src={convertBufferToDataURL(data.coverpic.img.data)}
-                            width={500}
-                            height={500}
-                            className="rounded-t-xl"
-                            alt="Cover Pic"
-                        />
-                    )}             
-                    <p className="text-left text-2xl  pt-3 pl-3 bg-gradient-to-r from-yellow-500 via-orange-200 via-green-500 to-blue-500">Name :- {data.name}</p>
-                    <p className="text-left text-2xl  pt-3 pl-3 bg-gradient-to-r from-yellow-500 via-orange-200 via-green-500 to-blue-500">Username :- {data.username}</p>
-                    <p className="text-left text-2xl  pt-3 pl-3 bg-gradient-to-r from-yellow-500 via-orange-200 via-green-500 to-blue-500">City :- {data.city}</p>
-                    <p className="text-left text-2xl  pt-3 pl-3 bg-gradient-to-r from-yellow-500 via-orange-200 via-green-500 to-blue-500">Webisite :- {data.website}</p>
-                </div>
-            )
-        })
-      }
+    <div className="flex-grow overflow-y-auto">
+      <h1 className="text-4xl font-bold mb-8">Find Your Buddies</h1>
+      {allUsers.map((data, index) => (
+        <div key={index} className="flex border-2 border-gradient-red rounded-xl mb-4 p-4">
+          <div className="flex-shrink-0">
+            <img
+              src={convertBufferToDataURL(data.profilepic?.img?.data)}
+              className="rounded-full w-16 h-16 object-cover border-2 border-gradient-blue mx-auto"
+              alt="Profile Pic"
+            />
+          </div>
+          <div className="flex-grow pl-4">
+            <div className="flex items-center mb-1">
+              <p className="text-lg text-blue-800 font-bold">
+                {data.name}
+              </p>
+              <p className="text-sm ml-2 text-blue-500">
+                {data.username}
+              </p>
+            </div>
+            <p className="text-sm mb-1">
+              <span className="font-bold">City:</span> {data.city}
+            </p>
+            <p className="text-sm mb-1">
+              <span className="font-bold">Website:</span> {data.website}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

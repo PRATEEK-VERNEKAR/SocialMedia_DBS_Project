@@ -2,38 +2,43 @@ const express = require('express');
 const pool  = require('../connect.js');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const multer = require('multer');
+const upload = multer();
 
 const getuser = (req,res)=>{
-    const userId = req.params.id;
+    // const userId = req.params.id;
     const token = req.cookies.accessToken;
     if(!token){
         return res.json("Please Login so you can access the content");
     }
-   
-    pool.getConnection((err,connection)=>{
+
+    jwt.verify(token,"secretkey",(err,userInfo)=>{
         if(err){
-            return res.status(403).json("Sorry some problem");
+            console.log(err);
+            return res.status(404).json({message:"Some error dude"});
         }
-        const q = "SELECT * FROM new_table WHERE `id` = ?"
-        connection.query(q,[userId],(err,data)=>{
+
+        pool.getConnection((err,connection)=>{
             if(err){
-                console.log(err);
-                return res.json("Sorry Some issue");
+                return res.status(403).json("Sorry some problem");
             }
-            else{
-                const {password,...info} = data[0]|| {};
-                return res.json(info);
-            }
+            const q = "SELECT * FROM new_table WHERE `id` = ?"
+            console.log(userInfo.id)
+            connection.query(q,[userInfo.id],(err,data)=>{
+                if(err){
+                    console.log(err);
+                    return res.json("Sorry Some issue");
+                }
+                else{
+                    const {password,...info} = data[0]|| {};
+                    return res.json(info);
+                }
+            })
         })
     })
 }
 
 const getAllUser = (req,res)=>{
-    const token=req.cookies.accessToken;
-    if(!token){
-        return res.json("Please Login so you can access the content");
-    }
-     
     pool.getConnection((err,connection)=>{
         if(err){
             return res.status(403).json("Sorrry some problem");
@@ -52,53 +57,159 @@ const getAllUser = (req,res)=>{
     })
 }
 
-const updateuser = (req,res)=>{
+const updateuser = (req, res) => {
     const userId = req.params.id;
     const token = req.cookies.accessToken;
-    if(!token){
+
+    if (!token) {
         return res.json("Please login");
     }
-    jwt.verify(token,"secretkey",(err,userInfo)=>{
-        if(err){
+
+
+    jwt.verify(token, "secretkey", (err, userInfo) => {
+        if (err) {
             console.log(err);
             return res.status(401).json("Some error");
-        }
-        else{
-            pool.getConnection((err,connection)=>{
-                if(err){
-                    return res.status(403).json("some glitch , some issue sorry for inconveince");
-                }
-                else{
-                    const q = "UPDATE new_table SET `name`= ?,`city` = ?,`website` = ?,`profilepic` = ?,`coverpic` = ? WHERE `id` = ?";
+        } else {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    return res.status(403).json("Some glitch, some issue sorry for inconvenience");
+                } else {
+                    const q = "UPDATE new_table SET `city` = ?, `website` = ? WHERE `id` = ?";
+
                     const values = [
-                        req.body.name,
                         req.body.city,
                         req.body.website,
-                        req.body.profilepic,
-                        req.body.coverpic,
                         userInfo.id
-                    ]
-                    connection.query(q,values,(err,data)=>{
-                        if(err){
+                    ];
+
+                    console.log(values);
+
+                    connection.query(q, values, (err, data) => {
+                        if (err) {
                             console.log(err);
-                            return res.json("Some error sorry wait for some time or call the helpline number");
-                        }
-                        else{
-                            if(data.affectedRows > 0){
+                            return res.json("Some error, sorry wait for some time or call the helpline number");
+                        } else {
+                            if (data.affectedRows > 0) {
                                 return res.json("Updated");
-                            }
-                            else{
-                                return res.json("You Can update only your post");
+                            } else {
+                                return res.json("You can update only your post");
                             }
                         }
-                    })
+                    });
                 }
-            })
-        }                                           
-    })
-}
+            });
+        }
+    });
+};
 
 
+
+const updateCover = (req, res) => {
+    const userId = req.params.id;
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+        return res.json("Please login");
+    }
+
+    jwt.verify(token, "secretkey", (err, userInfo) => {
+        if (err) {
+            console.log(err);
+            return res.status(401).json("Some error");
+        } else {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    return res.status(403).json("Some glitch, some issue sorry for inconvenience");
+                } else {
+                    const q = "UPDATE new_table SET  `coverpic` = ? WHERE `id` = ?";
+
+                    upload.fields([{ name: 'coverpic', maxCount: 1 }, { name: 'profilepic' }])(req, res, (err) => {
+                        if (err) {
+                            console.log(err);
+                            return res.json("Error uploading files");
+                        }
+
+                        const coverpic = req.files?.coverpic?.[0]?.buffer;
+                        const profilepic = req.files?.profilepic?.[0]?.buffer;
+
+                        const values = [
+                            coverpic,
+                        ];
+
+                        connection.query(q, values, (err, data) => {
+                            if (err) {
+                                console.log(err);
+                                return res.json("Some error, sorry wait for some time or call the helpline number");
+                            } else {
+                                if (data.affectedRows > 0) {
+                                    return res.json("Updated");
+                                } else {
+                                    return res.json("You can update only your post");
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    });
+};
+
+const updateProfile = (req, res) => {
+    const userId = req.params.id;
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+        return res.json("Please login");
+    }
+
+    jwt.verify(token, "secretkey", (err, userInfo) => {
+        if (err) {
+            console.log(err);
+            return res.status(401).json("Some error");
+        } else {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    return res.status(403).json("Some glitch, some issue sorry for inconvenience");
+                } else {
+                    const q = "UPDATE new_table SET `profilepic` = ? WHERE `id` = ?";
+
+                    upload.fields([ { name: 'profilepic' }])(req, res, (err) => {
+                        if (err) {
+                            console.log(err);
+                            return res.json("Error uploading files");
+                        }
+
+                        // const coverpic = req.files?.coverpic?.[0]?.buffer;
+                        const profilepic = req.files?.profilepic?.[0]?.buffer;
+
+                        const values = [
+                            profilepic,
+                            userInfo.id
+                        ];
+
+                        console.log(profilepic)
+
+                        connection.query(q, values, (err, data) => {
+                            if (err) {
+                                console.log(err);
+                                return res.json("Some error, sorry wait for some time or call the helpline number");
+                            } else {
+                                if (data.affectedRows > 0) {
+                                    console.log("updated");
+                                    return res.json("Updated");
+                                } else {
+                                    return res.json("You can update only your post");
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    });
+};
 
 const protectedRoute = (req,res)=>{
     const token=req.cookies.accessToken;    
@@ -118,4 +229,4 @@ const protectedRoute = (req,res)=>{
   
 }
 
-module.exports = {getuser,updateuser,protectedRoute,getAllUser}
+module.exports = {getuser,updateuser,protectedRoute,getAllUser,updateCover,updateProfile}
