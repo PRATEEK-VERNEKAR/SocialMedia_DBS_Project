@@ -5,9 +5,13 @@ const moment = require('moment');
 
 const getcomments = (req,res)=>{
     
-    const q = `SELECT c.*, u.id AS userid, u.name, u.profilepic FROM comments AS c JOIN new_table AS u ON (u.id = c.userid)
-    WHERE c.postid = ? 
-    ORDER BY c.createdat DESC`;
+    // const q = `SELECT c.*, u.id AS userid, u.name, u.profilepic FROM comments AS c JOIN new_table AS u ON (u.id = c.userid)
+    // WHERE c.postid = ? 
+    // ORDER BY c.createdat DESC`;
+
+    const q=`SELECT * FROM comments WHERE postid=?`
+    console.log(req.query.postid);
+    console.log("HELLO")
 
     pool.getConnection((err,connection)=>{
         if(err){
@@ -37,8 +41,6 @@ const addcomment = (req,res)=>{
     jwt.verify(token,"secretkey",(err,userInfo)=>{
         if(err){
             return res.status(403).json("Sorry");
-
-
         }
 
         const q = "INSERT INTO comments(`desc`,  `createdat`, `userid`,`postid`) VALUES (?, ?, ?, ?)";
@@ -48,7 +50,7 @@ const addcomment = (req,res)=>{
             if(err){
                 return res.json("Sorry Some Glitch");
             }
-            const values = [req.body.desc,moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),userInfo.id,req.body.postid];
+            const values = [req.body.desc,moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),userInfo.id,req.query.postid];
             connection.query(q,values,(err,data)=>{
                 if(err){
                     return res.json(err);

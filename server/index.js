@@ -20,7 +20,7 @@ app.use(cookieparser());
 
 app.use('/api/users', userroute);
 app.use('/api/users/auth', authroute);
-app.use('/api/user',postsroute)
+app.use('/api/user/posts',postsroute)
 app.use('/api/users/comments',comment);
 app.use('/api/users',like)
 app.use('/api/users/relationship',relationship);

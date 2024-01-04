@@ -28,6 +28,29 @@ const getuser = (req,res)=>{
     })
 }
 
+const getAllUser = (req,res)=>{
+    const token=req.cookies.accessToken;
+    if(!token){
+        return res.json("Please Login so you can access the content");
+    }
+     
+    pool.getConnection((err,connection)=>{
+        if(err){
+            return res.status(403).json("Sorrry some problem");
+        }
+        const q="SELECT * FROM new_table";
+        connection.query(q,(err,data)=>{
+            if(err){
+                console.log(err);
+                return res.json("Sorry some issue");
+            }
+            else{
+                const {password,...info}=data || {};
+                return res.json(info);
+            }
+        })
+    })
+}
 
 const updateuser = (req,res)=>{
     const userId = req.params.id;
@@ -95,4 +118,4 @@ const protectedRoute = (req,res)=>{
   
 }
 
-module.exports = {getuser,updateuser,protectedRoute}
+module.exports = {getuser,updateuser,protectedRoute,getAllUser}

@@ -45,6 +45,43 @@ const getposts = (req,res)=>{
     })
 }
 
+const getAllposts = (req,res)=>{
+    const userId = req.query.userId;
+    const token = req.cookies.accessToken;
+    console.log("HELEI")
+    console.log(token);
+
+    if(!token){
+        console.log("Sorry");
+        return res.status(401).json("Not logged in");
+    }
+    jwt.verify(token,"secretkey",(err,userInfo)=>{
+        if(err){
+            return res.status(403).json("Invalid,sorry cannot retrive");
+        }
+
+
+        // const q = `SELECT p.*, u.id AS userid, u.name, u.profilepic FROM posts AS p 
+        // JOIN new_table AS u ON (u.id = p.userid) LEFT JOIN relationships AS r ON (p.userid = r.followingid) WHERE p.userid = ? OR r.followersid = ?`;
+        
+        const q= `SELECT posts.desc, posts.img, posts.createddate,posts.userid,posts.postid FROM posts LEFT JOIN likes ON posts.postid = likes.postid;
+      `;        
+        pool.getConnection((err,connection)=>{
+            if(err){
+                return res.json("Sorry SOme glitch");
+            }
+           connection.query(q,[userInfo.id,userInfo.id,userInfo.id],(err,data)=>{
+                if(err){
+                    console.log(err);
+                }
+                // const filteredData=data.map(({desc,img,createddate,...rest})=>{return {desc,img,createddate}});   // or modify query
+                return res.json(data);
+           })
+        })
+
+    })
+}
+
 
 
 const addposts = (req,res)=>{
@@ -162,4 +199,4 @@ const deleteposts = (req,res)=>{
 
 
 
-module.exports = {getposts,addposts,deleteposts}
+module.exports = {getposts,addposts,deleteposts,getAllposts}

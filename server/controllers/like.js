@@ -12,9 +12,9 @@ const getpostlikes = (req,res)=>{
             return res.json("Some error sorry");
         }
 
-        // console.log(req.query.postid)
+        console.log(req.params.postid)
 
-        connection.query(q,[28],(err,data)=>{
+        connection.query(q,[req.params.postid],(err,data)=>{
             if(err){
                 console.log(err);
                 return res.json("Sorry some glitch")
@@ -28,7 +28,7 @@ const getpostlikes = (req,res)=>{
 }
 
 const addlike = (req,res)=>{
-    const userId = req.query.userId;
+    // const userId = req.query.userId;
     const token = req.cookies.accessToken;
     if(!token){ 
         return res.json("Not logged in");
@@ -39,8 +39,9 @@ const addlike = (req,res)=>{
             return res.status(401).json("Sorry Some glitch");
         }
         else{
-            const q = "INSERT INTO likes(`userid`,`postid`) VALUES (?, ?)";
-            const values = [userInfo.id,req.body.postid];
+            const q = "INSERT INTO likes(`userid`,`postid`,`likeduserid`) VALUES (?,?,?)";
+            console.log(req.body);
+            const values = [req.body.userid,req.body.postid,userInfo.id,];
             pool.getConnection((err,connection)=>{
                 if(err){
                     return res.status(403).json("Sorry Some glitch");
@@ -56,7 +57,6 @@ const addlike = (req,res)=>{
                 })
             })
         }
-
     })
 }
 
