@@ -5,6 +5,6 @@ const { add } = require('lodash');
 
 
 router.get("/getPostComments",getcomments)
-router.post("/",addcomment)
+router.post("/addComment",addcomment)
 router.delete("/:id",deletecomm);
 module.exports = router;

@@ -5,9 +5,12 @@
 
 
 
+body{
+  background-color: rgba(0, 0, 0, 0.712);
+}
 .App {
   text-align: center;
   min-height: 100%;
   min-width: 600px;
-  border:20px solid gray;
+  border:20px solid rgb(18, 5, 90);
 }

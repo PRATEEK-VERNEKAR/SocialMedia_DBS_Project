@@ -33,11 +33,6 @@ export default function HomePage(){
           <button className='w-[100px] m-2 p-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 border-4 rounded-xl border-red-400' onClick={()=>{navigate('/login')}}>Login</button>
       </div>
 
-      <div className='flex justify-between w-full px-4 pb-2'>
-        <button onClick={()=>{navigate('/')}}>Home</button>
-        <button onClick={()=>{navigate('/allPosts')}}>Posts</button>
-        <button onClick={()=>{navigate('/allUsers')}}>All</button>
-      </div>
     </div>
   )
 }

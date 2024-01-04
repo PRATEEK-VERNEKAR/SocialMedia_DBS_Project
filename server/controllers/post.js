@@ -10,39 +10,46 @@ const { connection } = require('mongoose');
 
 
 const getposts = (req,res)=>{
-    const userId = req.query.userId;
+    // const userId = req.query.userId;
     const token = req.cookies.accessToken;
     console.log(token);
 
-    if(!token){
-        console.log("Sorry");
-        return res.status(401).json("Not logged in");
-    }
-    jwt.verify(token,"secretkey",(err,userInfo)=>{
-        if(err){
-            return res.status(403).json("Invalid,sorry cannot retrive");
+    try{
+
+        if(!token){
+            console.log("Sorry");
+            return res.status(401).json("Not logged in");
         }
-
-
-        const q = `SELECT p.*, u.id AS userid, u.name, u.profilepic FROM posts AS p 
-        JOIN new_table AS u ON (u.id = p.userid) LEFT JOIN relationships AS r ON (p.userid = r.followingid) WHERE p.userid = ? OR r.followersid = ?
-        ORDER BY p.createddate DESC`;
-        
-        
-        pool.getConnection((err,connection)=>{
+        jwt.verify(token,"secretkey",(err,userInfo)=>{
             if(err){
-                return res.json("Sorry SOme glitch");
+                return res.status(403).json("Invalid,sorry cannot retrive");
             }
-           connection.query(q,[userInfo.id,userInfo.id,userInfo.id],(err,data)=>{
+            
+            
+            // const q = `SELECT p.*, u.id AS userid, u.name, u.profilepic FROM posts AS p 
+            // JOIN new_table AS u ON (u.id = p.userid) LEFT JOIN relationships AS r ON (p.userid = r.followingid) WHERE p.userid = ? OR r.followersid = ?
+            // ORDER BY p.createddate DESC`;
+            
+            const q=`SELECT posts.* , COUNT(likes.likeid) AS like_count FROM posts LEFT JOIN likes ON (posts.postid=likes.postid) WHERE posts.postid = ?`;
+            
+            pool.getConnection((err,connection)=>{
                 if(err){
-                    console.log(err);
+                    return res.json("Sorry SOme glitch");
                 }
-                const filteredData=data.map(({desc,img,createddate,...rest})=>{return {desc,img,createddate}});   // or modify query
-                return res.json(filteredData);
-           })
+                connection.query(q,[req.params.postid],(err,data)=>{
+                    if(err){
+                        console.log(err);
+                    }
+                    // const filteredData=data.map(({desc,img,createddate,...rest})=>{return {desc,img,createddate}});   // or modify query
+                    return res.json(data);
+                })
+            })
         })
-
-    })
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({"message":"Internal Server Error"})
+    }
 }
 
 const getAllposts = (req,res)=>{
@@ -64,8 +71,7 @@ const getAllposts = (req,res)=>{
         // const q = `SELECT p.*, u.id AS userid, u.name, u.profilepic FROM posts AS p 
         // JOIN new_table AS u ON (u.id = p.userid) LEFT JOIN relationships AS r ON (p.userid = r.followingid) WHERE p.userid = ? OR r.followersid = ?`;
         
-        const q= `SELECT posts.desc, posts.img, posts.createddate,posts.userid,posts.postid FROM posts LEFT JOIN likes ON posts.postid = likes.postid;
-      `;        
+        const q= `SELECT posts.desc, posts.img, posts.createddate,posts.userid,posts.postid FROM posts LEFT JOIN likes ON posts.postid = likes.postid;`;        
         pool.getConnection((err,connection)=>{
             if(err){
                 return res.json("Sorry SOme glitch");
@@ -73,6 +79,7 @@ const getAllposts = (req,res)=>{
            connection.query(q,[userInfo.id,userInfo.id,userInfo.id],(err,data)=>{
                 if(err){
                     console.log(err);
+                    return res.status(404).json("Sorry SOme glitch");
                 }
                 // const filteredData=data.map(({desc,img,createddate,...rest})=>{return {desc,img,createddate}});   // or modify query
                 return res.json(data);
@@ -82,6 +89,23 @@ const getAllposts = (req,res)=>{
     })
 }
 
+
+const getUserByPosts=(req,res)=>{
+    const q=`SELECT new_table.id,new_table.name,new_table.profilepic FROM posts JOIN new_table ON posts.userid=new_table.id WHERE postid=?`;
+
+    pool.getConnection((err,connection)=>{
+        if(err){
+            return res.status(404).json({"message":"Cant access database"});
+        }
+        connection.query(q,[req.body.postid],(err,data)=>{
+            if(err){
+                console.log(err);
+                return res.status(404).json("Sorry SOme glitch");
+            }
+            return res.json(data[0]);
+        })
+    })
+}
 
 
 const addposts = (req,res)=>{
@@ -199,4 +223,4 @@ const deleteposts = (req,res)=>{
 
 
 
-module.exports = {getposts,addposts,deleteposts,getAllposts}
+module.exports = {getposts,addposts,deleteposts,getAllposts,getUserByPosts}

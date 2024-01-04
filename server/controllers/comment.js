@@ -31,36 +31,41 @@ const getcomments = (req,res)=>{
 
 
 const addcomment = (req,res)=>{
-
-    const userId = req.query.userId;
-    const token = req.cookies.accessToken;
-    if(!token){
-        console.log("Sorry");
-        return res.status(401).json("Not logged in");
-    }
-    jwt.verify(token,"secretkey",(err,userInfo)=>{
-        if(err){
-            return res.status(403).json("Sorry");
+    try{
+        const userId = req.query.userId;
+        const token = req.cookies.accessToken;
+        if(!token){
+            console.log("Sorry");
+            return res.status(401).json("Not logged in");
         }
-
-        const q = "INSERT INTO comments(`desc`,  `createdat`, `userid`,`postid`) VALUES (?, ?, ?, ?)";
- 
-
-        pool.getConnection((err,connection)=>{
+        jwt.verify(token,"secretkey",(err,userInfo)=>{
             if(err){
-                return res.json("Sorry Some Glitch");
+                return res.status(403).json("Sorry");
             }
-            const values = [req.body.desc,moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),userInfo.id,req.query.postid];
-            connection.query(q,values,(err,data)=>{
+            
+            const q = "INSERT INTO comments(`desc`, `createdat`, `userid`,`postid`,`commenteduserid`) VALUES (?, ?, ?, ?,?)";
+            
+            
+            pool.getConnection((err,connection)=>{
                 if(err){
-                    return res.json(err);
+                    return res.json("Sorry Some Glitch");
                 }
-                else{
-                    return res.status(200).json("Post is Created")
-                }
+                const values = [req.body.desc,moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),req.body.userid,req.body.postid,userInfo.id];
+                connection.query(q,values,(err,data)=>{
+                    if(err){
+                        return res.json(err);
+                    }
+                    else{
+                        return res.status(200).json("Comment is Created")
+                    }
+                })
             })
         })
-    })
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({messasge:"Internal Server Error"})
+    }
 
 }
 

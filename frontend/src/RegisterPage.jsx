@@ -25,7 +25,7 @@ export default function RegisterPage(){
     };
 
     return(
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full flex flex-col justify-center items-center flex-grow">
         <form className="flex flex-col mt-5 gap-4 w-[90%] items-center ">
           <h2 className='text-3xl'>Register Here!!</h2>
           <input className='border-4 border-red-800 rounded-2xl w-[90%] text-2xl p-2 bg-gradient-to-r from-yellow-500 via-orange-200 via-green-500 to-blue-500 placeholder-white text-white' onChange={handleChange} type="text" name='name' id='name' value={user.name} placeholder="Name"></input>
