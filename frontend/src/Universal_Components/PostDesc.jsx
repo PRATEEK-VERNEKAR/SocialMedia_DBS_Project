@@ -52,7 +52,7 @@ const PostDesc = () => {
   
 
   return (
-    <div className='flex-grow'>
+    <div className='flex-grow overflow-y-auto'>
       <h1 className='text-4xl m-4'>{user.name}</h1>
       
       {user.img ? (

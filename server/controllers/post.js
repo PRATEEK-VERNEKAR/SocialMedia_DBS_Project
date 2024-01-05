@@ -15,7 +15,6 @@ const getposts = (req,res)=>{
     console.log(token);
 
     try{
-
         if(!token){
             console.log("Sorry");
             return res.status(401).json("Not logged in");
@@ -51,6 +50,48 @@ const getposts = (req,res)=>{
         return res.status(500).json({"message":"Internal Server Error"})
     }
 }
+
+const getSingleUserPosts=(req,res)=>{
+    const token = req.cookies.accessToken;
+    console.log(token);
+
+    try{
+        if(!token){
+            console.log("Sorry");
+            return res.status(401).json("Not logged in");
+        }
+        jwt.verify(token,"secretkey",(err,userInfo)=>{
+            if(err){
+                return res.status(403).json("Invalid,sorry cannot retrive");
+            }
+            
+            
+            // const q = `SELECT p.*, u.id AS userid, u.name, u.profilepic FROM posts AS p 
+            // JOIN new_table AS u ON (u.id = p.userid) LEFT JOIN relationships AS r ON (p.userid = r.followingid) WHERE p.userid = ? OR r.followersid = ?
+            // ORDER BY p.createddate DESC`;
+            
+            const q=`SELECT * FROM posts WHERE userid = ?`;
+            
+            pool.getConnection((err,connection)=>{
+                if(err){
+                    return res.json("Sorry SOme glitch");
+                }
+                connection.query(q,[userInfo.id],(err,data)=>{
+                    if(err){
+                        console.log(err);x
+                    }
+                    // const filteredData=data.map(({desc,img,createddate,...rest})=>{return {desc,img,createddate}});   // or modify query
+                    return res.json(data);
+                })
+            })
+        })
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({"message":"Internal Server Error"})
+    }
+}
+
 
 const getAllposts = (req,res)=>{
     const userId = req.query.userId;
@@ -213,4 +254,4 @@ const deleteposts = (req,res)=>{
 
 
 
-module.exports = {getposts,addposts,deleteposts,getAllposts,getUserByPosts}
+module.exports = {getposts,addposts,deleteposts,getAllposts,getUserByPosts,getSingleUserPosts}

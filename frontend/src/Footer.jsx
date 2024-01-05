@@ -17,7 +17,7 @@ const Footer = () => {
 
   return (
     <div>
-      <div className='flex justify-between w-full px-4 pb-2'>
+      <div className='flex justify-between w-full px-4 pb-2 mt-3'>
         <button className='text-2xl' onClick={() => navigateTo('/')}><IoHomeSharp /></button>
         <button className='text-2xl' onClick={() => navigateTo('/allPosts')}><IoImages/></button>
         <button className='text-2xl' onClick={() => navigateTo('/allUsers')}><MdOutlineExplore/></button>
