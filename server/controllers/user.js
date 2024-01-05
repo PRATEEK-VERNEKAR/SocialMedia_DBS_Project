@@ -43,7 +43,7 @@ const getAllUser = (req,res)=>{
         if(err){
             return res.status(403).json("Sorrry some problem");
         }
-        const q="SELECT * FROM new_table";
+        const q="SELECT * FROM new_table LEFT JOIN relationship ON (new_table.id=relationship.followingid) where new_table.id=? AND realionship.followingid IS NULL;";
         connection.query(q,(err,data)=>{
             if(err){
                 console.log(err);

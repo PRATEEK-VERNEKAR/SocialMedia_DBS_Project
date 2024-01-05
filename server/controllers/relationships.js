@@ -3,7 +3,7 @@ const pool  = require('../connect.js');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
-const getallrelationship = (req,res)=>{
+const getAllFollowings = (req,res)=>{
     const userId = req.query.userId;
     const token = req.cookies.accessToken;
     console.log("HIIHI")
@@ -29,6 +29,31 @@ const getallrelationship = (req,res)=>{
     })
 }
 
+const getAllFollowers = (req,res)=>{
+    const userId = req.query.userId;
+    const token = req.cookies.accessToken;
+    console.log("HIIHI")
+    console.log(token);
+    if(!token){
+        return res.json("Sorry No token");
+    }
+
+    jwt.verify(token,"secretkey",(err,userInfo)=>{
+        const q = "SELECT * FROM relationships JOIN new_table ON (new_table.id=relationships.followersid) WHERE `followingid` = ?";
+        console.log(userInfo.id)
+
+        pool.getConnection((err,connection)=>{
+            if(err){
+                return res.json(err);
+            }
+            connection.query(q,[userInfo.id],(err,data)=>{
+                console.log(userInfo.id)
+                console.log(data);
+                return res.status(200).json(data.map(({followingid,followersid,relationshipid,password,id,...rest})=>({...rest})));
+            })
+        })
+    })
+}
 
 
 const addfollowing = (req,res)=>{
@@ -103,4 +128,4 @@ const deleterelationship = (req,res)=>{
         })
     
 }
-module.exports = {getallrelationship,addfollowing,deleterelationship};
+module.exports = {getAllFollowings,addfollowing,deleterelationship,getAllFollowers};
