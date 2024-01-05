@@ -47,13 +47,13 @@ const AllPosts = () => {
 
   
   return (
-    <div className='h-full  overflow-y-auto overflow-x-hidden grid grid-cols-2 w-full items-start justify-start'>
+    <div className='flex-grow overflow-y-auto overflow-x-hidden grid grid-cols-2 w-full items-start justify-start'>
       {
       allPosts.map((post, index) => {
         return (
             <div onClick={()=>{goToPost(post.postid)}} className="border-2 border-red-400 m-2 rounded-xl overflow-hidden">
                 {post.img && (
-                    <div className="relative h-48 overflow-hidden rounded-t-xl">
+                    <div className="relative h-[200px] overflow-hidden rounded-t-xl">
                         <img
                             src={convertBufferToDataURL(post.img.data)}
                             className="w-full h-full object-cover"

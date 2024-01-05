@@ -19,7 +19,7 @@ export default function HomePage(){
   return(
     <div className='h-[100%] flex flex-col justify-evenly w-full'>
       <div>
-        <h1 style={fonts.appName} className="text-2xl py-5 text-6xl font-bold">NexusNet</h1>
+        <h1 style={fonts.appName} className="text-2xl py-5 text-6xl font-bold">PicPost</h1>
         <p style={fonts.subtitleName} className='capitalize text-2xl'>Share Your Days </p>
       </div>
 

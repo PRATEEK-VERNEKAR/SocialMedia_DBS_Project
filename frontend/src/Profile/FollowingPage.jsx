@@ -12,18 +12,18 @@ export default function FollowingPage() {
       const accessToken = Cookies.get('accessToken');
       console.log(accessToken);
 
-    //   if (!accessToken) {
-    //     return navigate('/login');
-    //   }
+      if (!accessToken) {
+        return navigate('/login');
+      }
     
     try {
 
-        const verify=await axios.get("http://localhost:8000/api/users/protectedRoute",{withCredentials:true});
-        console.log(verify);
+        // const verify=await axios.get("http://localhost:8000/api/users/protectedRoute",{withCredentials:true});
+        // console.log(verify);
 
-        if(!verify.data.success){
-            return navigate('/login');
-        }
+        // if(!verify.data.success){
+        //     return navigate('/login');
+        // }
 
         const response = await axios.get('http://localhost:8000/api/users/relationship/getAllFollowings',{withCredentials:true});
         console.log(response);

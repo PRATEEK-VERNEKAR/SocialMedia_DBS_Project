@@ -14,6 +14,8 @@ const getAllFollowings = (req,res)=>{
 
     jwt.verify(token,"secretkey",(err,userInfo)=>{
         const q = "SELECT * FROM relationships JOIN new_table ON (new_table.id=relationships.followingid) WHERE `followersid` = ?";
+        // const q = "SELECT * FROM relationships WHERE `followersid` = ?";
+
         console.log(userInfo.id)
 
         pool.getConnection((err,connection)=>{
@@ -40,6 +42,8 @@ const getAllFollowers = (req,res)=>{
 
     jwt.verify(token,"secretkey",(err,userInfo)=>{
         const q = "SELECT * FROM relationships JOIN new_table ON (new_table.id=relationships.followersid) WHERE `followingid` = ?";
+        // const q = "SELECT * FROM relationships WHERE `followingid` = ?";
+
         console.log(userInfo.id)
 
         pool.getConnection((err,connection)=>{
@@ -126,6 +130,49 @@ const deleterelationship = (req,res)=>{
             })
     
         })
-    
 }
-module.exports = {getAllFollowings,addfollowing,deleterelationship,getAllFollowers};
+
+const checkRelationship = (req,res)=>{
+    console.log("HEELOE")
+    const userId = req.params.userid;
+    const token = req.cookies.accessToken;
+    console.log(token);
+    if(!token){
+        console.log("Sorry");
+        return res.status(401).json("Not logged in");
+    }
+    jwt.verify(token,"secretkey",(err,userInfo)=>{
+        if(err){
+            return res.status(403).json({message:"Invalid,sorry cannot retrive",success:false});
+        }
+
+        if(userInfo.id==userId){
+            return res.status(403).json({message:"Cant follow yourself",success:false})
+        }
+
+
+        const q = "SELECT * FROM relationship WHERE `followersid`=? AND `followingid` = ?";
+
+        const values = [userInfo.id,userId];
+
+        console.log(values);
+        pool.getConnection((err,connection)=>{
+            if(err){
+                return res.json("Sorry SOme glitch");
+            }
+           connection.query(q,values,(err,data)=>{
+                if(err){
+                    console.log(err);
+                }
+                if(data.length<=0){
+                    return res.status(403).json({message:"Cant follow yourself",success:false})
+                }
+                return res.json({success:true});
+           })
+        })
+
+    })
+}
+
+
+module.exports = {getAllFollowings,addfollowing,deleterelationship,getAllFollowers,checkRelationship};

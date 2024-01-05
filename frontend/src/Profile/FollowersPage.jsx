@@ -18,13 +18,16 @@ export default function FollowersPage() {
     
     try {
 
-        const verify=await axios.get("http://localhost:8000/api/users/protectedRoute",{withCredentials:true});
-        console.log(verify);
+        // const verify=await axios.get("http://localhost:8000/api/users/protectedRoute",{withCredentials:true});
+        // console.log(verify);
 
-        if(!verify.data.success){
-            return navigate('/login');
+        // if(!verify.data.success){
+        //     return navigate('/login');
+        // }
+
+        if(!Cookies.get('accessToken')){
+            navigate('/login');
         }
-
         const response = await axios.get('http://localhost:8000/api/users/relationship/getAllFollowers',{withCredentials:true});
         console.log(response);
 

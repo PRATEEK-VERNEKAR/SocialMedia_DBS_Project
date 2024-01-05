@@ -34,6 +34,7 @@ const addcomment = (req,res)=>{
     try{
         const userId = req.query.userId;
         const token = req.cookies.accessToken;
+        console.log("\naddcomment\n\n");
         if(!token){
             console.log("Sorry");
             return res.status(401).json("Not logged in");

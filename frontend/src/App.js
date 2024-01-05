@@ -10,6 +10,7 @@ import FollowersPage from './Profile/FollowersPage';
 import AllUsers from './Footer_Components/AllUsers';
 import AllPosts from './Footer_Components/AllPosts';
 import PostDesc from './Universal_Components/PostDesc';
+import Users from './Universal_Components/Users';
 import Footer from './Footer';
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
             <Route path='/allUsers' element={<AllUsers/>}/>
             <Route path='/allPosts' element={<AllPosts/>}/>
             <Route path='/postDesc/:postid' element={<PostDesc/>}/>
+            <Route path='/users/:userid' element={<Users/>}/>
+
           </Routes>
           <Footer/>
         </BrowserRouter>

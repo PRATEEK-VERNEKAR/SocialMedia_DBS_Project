@@ -38,12 +38,50 @@ const getuser = (req,res)=>{
     })
 }
 
+const getSearchedUser = (req,res)=>{
+    const userId = req.params.userid;
+    const token = req.cookies.accessToken;
+    console.log(token);
+    if(!token){
+        return res.json("Please Login so you can access the content");
+    }
+
+    jwt.verify(token,"secretkey",(err,userInfo)=>{
+        if(err){
+            console.log(err);
+            return res.status(404).json({message:"Some error dude"});
+        }
+
+        pool.getConnection((err,connection)=>{
+            if(err){
+                return res.status(403).json("Sorry some problem");
+            }
+            const q = "SELECT * FROM new_table WHERE `id` = ?"
+            console.log(userInfo.id)
+            console.log(userId);
+            connection.query(q,[userId],(err,data)=>{
+                if(err){
+                    console.log(err);
+                    return res.json("Sorry Some issue");
+                }
+                else{
+                    const {password,...info} = data[0]|| {};
+                    return res.json(info);
+                }
+            })
+        })
+    })
+}
+
+
+
+
 const getAllUser = (req,res)=>{
     pool.getConnection((err,connection)=>{
         if(err){
             return res.status(403).json("Sorrry some problem");
         }
-        const q="SELECT * FROM new_table LEFT JOIN relationship ON (new_table.id=relationship.followingid) where new_table.id=? AND realionship.followingid IS NULL;";
+        const q="SELECT * FROM new_table ";
         connection.query(q,(err,data)=>{
             if(err){
                 console.log(err);
@@ -229,4 +267,4 @@ const protectedRoute = (req,res)=>{
   
 }
 
-module.exports = {getuser,updateuser,protectedRoute,getAllUser,updateCover,updateProfile}
+module.exports = {getuser,updateuser,protectedRoute,getAllUser,updateCover,updateProfile,getSearchedUser}

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 const AllUsers = () => {
+  const navigate=useNavigate();
   const [allUsers,setAllUsers]=useState([]);
   useEffect(()=>{
     const getAllUsers=async()=>{
@@ -36,7 +37,7 @@ const AllUsers = () => {
     <div className="flex-grow overflow-y-auto">
       <h1 className="text-4xl font-bold mb-8">Find Your Buddies</h1>
       {allUsers.map((data, index) => (
-        <div key={index} className="flex border-2 border-gradient-red rounded-xl mb-4 p-4 h-[140px] overflow-hidden">
+        <div key={index} className="flex border-2 border-gradient-red rounded-xl mb-4 p-4 h-[140px] overflow-hidden" onClick={()=>{navigate(`/users/${data.id}`)}}>
           <div className="flex-shrink-0 ">
             <img
               src={convertBufferToDataURL(data.profilepic?.data)}
