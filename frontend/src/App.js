@@ -6,6 +6,7 @@ import LoginPage from './LoginPage';
 import ProfilePage from './Profile/ProfilePage';
 import PostsPage from './Profile/PostsPage';
 import FollowingPage from './Profile/FollowingPage';
+import FollowersPage from './Profile/FollowersPage';
 import AllUsers from './Footer_Components/AllUsers';
 import AllPosts from './Footer_Components/AllPosts';
 import PostDesc from './Universal_Components/PostDesc';
@@ -22,6 +23,8 @@ function App() {
             <Route path='/login' element={<LoginPage />} />
             <Route path='/profile' element={<ProfilePage />}/>
             <Route path='/followings' element={<FollowingPage />} />
+            <Route path='/followers' element={<FollowersPage />} />
+
             <Route path='/photos' element={<PostsPage />} />
             <Route path='/allUsers' element={<AllUsers/>}/>
             <Route path='/allPosts' element={<AllPosts/>}/>

@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function FollowingPage() {
+export default function FollowersPage() {
   const navigate = useNavigate();
   const [followings,setFollowings]=useState([])
 
@@ -25,7 +25,7 @@ export default function FollowingPage() {
             return navigate('/login');
         }
 
-        const response = await axios.get('http://localhost:8000/api/users/relationship/getAllFollowings',{withCredentials:true});
+        const response = await axios.get('http://localhost:8000/api/users/relationship/getAllFollowers',{withCredentials:true});
         console.log(response);
 
         // if(response.data.length!=0){
@@ -52,8 +52,8 @@ export default function FollowingPage() {
 
   return (
     <>
-      <div className="flex flex-col flex-grow overflow-y-auto w-[100%] items-center ">
-        <h1 className="m-4 text-4xl underline mb-[50px]">You Follow</h1>
+      <div className="flex flex-col h-[100%] w-[100%] items-center ">
+        <h1 className="m-4 text-4xl underline mb-[50px]">Your Followers</h1>
         <div className="flex-grow overflow-auto w-[90%] ">
             {
                 followings.map((data,index)=>{

@@ -19,8 +19,8 @@ export default function HomePage(){
   return(
     <div className='h-[100%] flex flex-col justify-evenly w-full'>
       <div>
-        <h1 style={fonts.appName} className="text-2xl py-5 text-4xl font-bold">RCBians </h1>
-        <p style={fonts.subtitleName} className='capitalize'>Share Your Days</p>
+        <h1 style={fonts.appName} className="text-2xl py-5 text-6xl font-bold">NexusNet</h1>
+        <p style={fonts.subtitleName} className='capitalize text-2xl'>Share Your Days </p>
       </div>
 
 
@@ -28,7 +28,8 @@ export default function HomePage(){
         Cookies.get("accessToken")?(
           <div className='flex flex-col justify-center items-center m-4'>
             <button className='w-[90%] m-2 p-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 border-4 rounded-xl border-red-400' onClick={()=>{navigate('/photos')}}>Your Profile</button>
-            <button className='w-[90%] m-2 p-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 border-4 rounded-xl border-red-400' onClick={()=>{navigate('/followings')}}>You Follow</button>
+            <button className='w-[90%] m-2 p-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 border-4 rounded-xl border-red-400' onClick={()=>{navigate('/followings')}}>Followings</button>
+            <button className='w-[90%] m-2 p-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 border-4 rounded-xl border-red-400' onClick={()=>{navigate('/followers')}}>Followers</button>
           </div>
         ):
         (

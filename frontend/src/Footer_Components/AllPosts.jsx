@@ -39,6 +39,13 @@ const AllPosts = () => {
     return dataUrl;
   };
 
+  const formatDateString = (dateString) => {
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', options);
+  };
+
+  
   return (
     <div className='h-full  overflow-y-auto overflow-x-hidden grid grid-cols-2 w-full items-start justify-start'>
       {
@@ -54,9 +61,9 @@ const AllPosts = () => {
                         />
                     </div>
                 )}
-                <div className="p-4 bg-gradient-to-r from-yellow-500 via-orange-200 via-green-500 to-blue-500">
-                    <p className="text-left text-sm text-white">{post.desc}</p>
-                    <p className="text-left text-sm text-white mb-2">{post.createddate}</p>
+                <div className="p-4 bg-gradient-to-r text-black from-yellow-500 via-orange-200 via-green-500 to-blue-500">
+                    <p className="text-left text-sm">{post.desc}</p>
+                    <p className="text-left text-sm mb-2">{formatDateString(post.createddate)}</p>
                 </div>
             </div>
       );

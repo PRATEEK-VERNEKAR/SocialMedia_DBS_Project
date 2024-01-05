@@ -32,7 +32,7 @@ export default function PostsPage() {
         }
 
         axios.defaults.withCredentials=true;
-        const response=await axios.get("http://localhost:8000/api/user/posts/allPosts");
+        const response=await axios.get("http://localhost:8000/api/user/posts/singleUserPosts");
         // console.log(  Object.values(res.data));
         console.log(response);
 
@@ -84,6 +84,8 @@ export default function PostsPage() {
       });
 
       console.log(response.data);
+
+      window.location.reload()
 
       // After posting, close the modal
       toggleCreatePostModal();
